@@ -1,4 +1,5 @@
 #define NUMPINS 2
+#define DELAY 9
 
 // the current state of the output pin
 int state[NUMPINS];
@@ -35,33 +36,15 @@ pinMode(5,OUTPUT);
 pinMode(6,OUTPUT);
 pinMode(7,OUTPUT);
 pinMode(8,OUTPUT);
+
+digitalWrite(5,HIGH);
+digitalWrite(6,HIGH);
+
+//digitalWrite(8,HIGH);
+
 }   
 
 void loop() { 
-
-//while(1){
-
-/* 
-//Right
-digitalWrite(8,HIGH);
-delay(1000);
-digitalWrite(8,LOW);
-
-digitalWrite(7,HIGH);
-delay(1000);
-digitalWrite(7,LOW);
-
-//If the switch is on 
-digitalWrite(6,HIGH); 
-delay(1000);
-//digitalWrite(6,LOW);
-
-digitalWrite(3,LOW);
-//}
-*/
-
-//LightSwitch(5,6);
-//LightSwitch(8,3);
 
 Read(2,13);
 
@@ -76,16 +59,27 @@ if(start<5 || start>13 || their <3 || their>11){
   return;
 }
 
+delay(1000);
+
 //Transition from green to red
 int i=start;
 for(;i>(start-3);i--){
 digitalWrite(i,HIGH);
-delay(1000);
+//else
+//FadeIn(i);
+if(i<=start-1)
+delay(2000);
+if(i!=start-2){
 digitalWrite(i,LOW);
+//delay(2000);
+//FadeOut(i);
+}
+
 }
 
 //Shut off their red light
 digitalWrite(their,LOW);
+//FadeOut(their);
 
 //Go directly to green light
 digitalWrite(their+2,HIGH);
@@ -93,10 +87,6 @@ digitalWrite(their+2,HIGH);
 }
 
 //Arr of previous
-//
-
-//Read num, Write to
-//num >=1
 
 int Read(int num,int to){
   
@@ -126,13 +116,37 @@ return -1;
     time[num-1] = millis();    
   }
 
-
   digitalWrite(to, state[num-1]);
 
   previous[num-1] = reading;
 
-
-
   return to;
+
+}
+
+void FadeIn(int To){
+ if(To<2||To>13){
+  printf("\n Error! To must be from 3 to 13");
+  return;
+ }
+ 
+for(int a = 0; a < 256; ++a){ 
+  analogWrite(To, a); 
+  delay(DELAY);  
+}
+   
+}
+
+void FadeOut(int To){
+ 
+if(To<2||To>13){
+  printf("\n Error! To must be from 3 to 13");
+  return;
+}
+ 
+for(int a = 255; a >=0; --a){ 
+  analogWrite(To, a); 
+  delay(DELAY);  
+}
 
 }
